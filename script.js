@@ -12,8 +12,9 @@ var bloco = {
     position_y: 0,
     width: 30,
     height:30,
-    gravity: 1,
-    velocity: 0,
+    gravity: 1.5,
+    velocityY: 0,
+    velocityX: 10,
     pulse: 20,
 
     draw: function(){
@@ -22,27 +23,35 @@ var bloco = {
     },
     update: function(){
         ctx.clearRect(0, 0, janela_width, janela_altura)
-        //this.velocity += this.gravity
-        if(this.position_y<=498){
-            this.velocity += this.gravity
-            this.position_y += this.velocity
+        this.velocityY += this.gravity
+        this.position_y += this.velocityY
+        if(this.position_y>floor.position_y - this.height){
+            this.position_y = floor.position_y - this.height
+            this.velocityY = 0
         }
-        else{
-            //this.position_y = 528
-            this.velocity = 0
-        }
-    },
-    up:function(){
 
+    },
+    control:function(e){
+        switch (e.key) {
+            case 'w':
+                bloco.velocityY -= bloco.pulse
+                bloco.position_y += bloco.velocityY
+            case 'd':
+                bloco.position_x += bloco.velocityX
+                break
+            case 'a':
+                bloco.position_x -= bloco.velocityX
+                break
+        }
     }
 }
 
 var floor = {
     position_x:0,
-    position_y:558,
+    position_y:550,
     width: janela_width,
-    height: 42,
-    
+    height: 50,
+
     draw: function(){
         ctx.fillStyle = 'black'
         ctx.fillRect(this.position_x, this.position_y, this.width, this.height)
@@ -68,11 +77,11 @@ function paint(){
 function main(){
     run()
     document.addEventListener('click',function(e){
-        bloco.velocity -= bloco.pulse
-        bloco.position_y += bloco.velocity
+      bloco.up()
     })
     document.addEventListener('keydown',function(e){
-        alert(bloco.position_y)
+        console.log(e.key)
+        bloco.control(e)
     })
 }
 
